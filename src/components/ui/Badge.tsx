@@ -1,0 +1,61 @@
+'use client'
+
+import { HTMLAttributes, forwardRef } from 'react'
+import { cn } from '@/lib/utils'
+
+export interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'purple' | 'gradient'
+  size?: 'sm' | 'md' | 'lg'
+  icon?: React.ReactNode
+}
+
+const Badge = forwardRef<HTMLDivElement, BadgeProps>(
+  ({ 
+    className, 
+    variant = 'default', 
+    size = 'md',
+    icon,
+    children, 
+    ...props 
+  }, ref) => {
+    const baseClasses = 'inline-flex items-center rounded-full font-medium transition-all duration-200'
+    
+    const variants = {
+      default: 'bg-gray-100 text-gray-800',
+      success: 'bg-emerald-100 text-emerald-800',
+      warning: 'bg-yellow-100 text-yellow-800',
+      error: 'bg-red-100 text-red-800',
+      info: 'bg-blue-100 text-blue-800',
+      purple: 'bg-purple-100 text-purple-800',
+      gradient: 'bg-gradient-to-r from-primary-500 to-accent-500 text-white'
+    }
+    
+    const sizes = {
+      sm: 'px-2 py-0.5 text-xs',
+      md: 'px-2.5 py-1 text-sm',
+      lg: 'px-3 py-1.5 text-base'
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          baseClasses,
+          variants[variant],
+          sizes[size],
+          className
+        )}
+        {...props}
+      >
+        {icon && (
+          <span className="mr-1">{icon}</span>
+        )}
+        {children}
+      </div>
+    )
+  }
+)
+
+Badge.displayName = 'Badge'
+
+export { Badge }
