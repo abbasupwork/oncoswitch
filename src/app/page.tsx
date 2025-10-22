@@ -35,12 +35,15 @@ export default function Home() {
   const [language, setLanguage] = useState<Language>('en')
   const [demoStatus, setDemoStatus] = useState<'online' | 'analyzing' | 'offline'>('online')
   const [demoSequence, setDemoSequence] = useState('CACCCTGTCCATCCCCAATTCGGGCCGAATTGCGCCACACGATGTGGGATCGTTC\nGCCCTCATGGTCATGTAAACAAATGCTTGCCACGCTGGCTTGCACAGTCCCATGAAT\nGAGACGCCGAGTTTAATCGAAGTCCATTAACCGGGACGTCGTATATGGACGCTTACC\nTGCAGCGCTGGCCTCCAAATGCAAGGGCGATCG')
-  const [selectedCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
-  const [operationMode, setOperationMode] = useState<'prediction' | 'generation'>('generation')
+  const [selectedCellLine, setSelectedCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
+  const [operationMode, setOperationMode] = useState<'prediction' | 'generation'>('prediction')
+  const [selectedModel, setSelectedModel] = useState('Oncoswitch_demo_X_v0.0')
+  const [sequenceLength, setSequenceLength] = useState('50')
 
   useEffect(() => {
     setLanguage(getCurrentLanguage())
   }, [])
+
 
   const handleStartAnalysis = useCallback(() => {
     setDemoStatus('analyzing')
@@ -52,13 +55,34 @@ export default function Home() {
 
   const generateRandomSequence = useCallback(() => {
     const bases = ['A', 'T', 'G', 'C']
-    const sequence = Array.from({ length: 200 }, () => bases[Math.floor(Math.random() * bases.length)]).join('')
+    const length = parseInt(sequenceLength)
+    const sequence = Array.from({ length }, () => bases[Math.floor(Math.random() * bases.length)]).join('')
     setDemoSequence(sequence)
-  }, [])
+  }, [sequenceLength])
 
   const clearSequence = useCallback(() => {
     setDemoSequence('')
   }, [])
+
+  // Validate DNA sequence input
+  const validateDNASequence = useCallback((sequence: string) => {
+    // Remove whitespace and convert to uppercase
+    const cleanSequence = sequence.replace(/\s/g, '').toUpperCase()
+    // Check if sequence contains only valid DNA bases
+    const isValid = /^[ATCG]*$/.test(cleanSequence)
+    return { isValid, cleanSequence }
+  }, [])
+
+  // Handle DNA sequence input with validation
+  const handleSequenceChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = e.target.value
+    const { isValid, cleanSequence } = validateDNASequence(inputValue)
+    
+    if (isValid) {
+      setDemoSequence(cleanSequence)
+    }
+    // If invalid, don't update the state (prevents invalid characters)
+  }, [validateDNASequence])
 
   const features = useMemo(() => [
     {
@@ -309,17 +333,13 @@ export default function Home() {
                             {language === 'ru' ? 'Предсказание активности' : 'Activity Prediction'}
                           </Button>
                           <Button 
-                            variant={operationMode === 'generation' ? 'gradient' : 'outline'}
+                            variant="outline"
                             size="sm" 
-                            onClick={() => setOperationMode('generation')}
-                            className={`flex-1 h-10 text-sm font-medium transition-all duration-300 ${
-                              operationMode === 'generation' 
-                                ? 'shadow-md hover:shadow-lg bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600' 
-                                : 'border-2 border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50'
-                            }`}
+                            disabled
+                            className={`flex-1 h-10 text-sm font-medium transition-all duration-300 border-2 border-gray-300 text-gray-400 bg-gray-50 opacity-60 cursor-not-allowed`}
                           >
                             <Zap className="w-4 h-4 mr-2" />
-                            {language === 'ru' ? 'Генерация последовательности' : 'Sequence Generation'}
+                            {language === 'ru' ? 'Генерация последовательности (заблокировано)' : 'Sequence Generation'}
                           </Button>
                         </div>
                       </motion.div>
@@ -343,11 +363,21 @@ export default function Home() {
                               {language === 'ru' ? 'AI Модель' : 'AI Model'}
                             </label>
                             <div className="relative">
-                              <Input
-                                value="OncoSwitcher_demo_X_v0"
-                                readOnly
-                                className="bg-gradient-to-r from-primary-50 to-accent-50 border-2 border-primary-200 text-primary-800 font-mono text-sm pr-20"
-                              />
+                              <select
+                                value={selectedModel}
+                                onChange={(e) => setSelectedModel(e.target.value)}
+                                className="w-full bg-gradient-to-r from-primary-50 to-accent-50 border-2 border-primary-200 text-primary-800 font-mono text-sm rounded-xl h-10 px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-200 appearance-none cursor-pointer"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                                  backgroundPosition: 'right 0.5rem center',
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundSize: '1.5em 1.5em'
+                                }}
+                              >
+                                <option value="Oncoswitch_demo_X_v0.0">Oncoswitch_demo_X_v0.0</option>
+                                <option value="Oncoswitch_demo_X_v1.0.0" disabled>Oncoswitch_demo_X_v1.0.0</option>
+                                <option value="Oncoswitch_demo_X_ v1.0.1" disabled>Oncoswitch_demo_X_ v1.0.1</option>
+                              </select>
                               <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                                 <Badge variant="success" className="text-xs">Latest</Badge>
                               </div>
@@ -369,10 +399,11 @@ export default function Home() {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                className="flex-1 h-10 font-medium border-2 border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300"
+                                disabled
+                                className="flex-1 h-10 font-medium border-2 border-gray-300 text-gray-400 bg-gray-50 opacity-60 cursor-not-allowed transition-all duration-300"
                               >
                                 <Activity className="w-4 h-4 mr-2" />
-                                {language === 'ru' ? 'Ткань' : 'Tissue'}
+                                {language === 'ru' ? 'Ткань (заблокировано)' : 'Tissue'}
                               </Button>
                             </div>
                           </div>
@@ -400,11 +431,21 @@ export default function Home() {
                               {language === 'ru' ? 'Длина последовательности' : 'Sequence Length'}
                             </label>
                             <div className="flex items-center gap-2">
-                              <Input
-                                value="200 bp"
-                                readOnly
-                                className="bg-gray-50 font-mono flex-1"
-                              />
+                              <select
+                                value={sequenceLength}
+                                onChange={(e) => setSequenceLength(e.target.value)}
+                                className="bg-gradient-to-r from-primary-50 to-accent-50 border-2 border-primary-200 text-primary-800 font-mono text-sm rounded-xl h-10 px-3 pr-10 flex-1 focus:outline-none focus:ring-2 focus:ring-primary-200 appearance-none cursor-pointer"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                                  backgroundPosition: 'right 0.5rem center',
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundSize: '1.5em 1.5em'
+                                }}
+                              >
+                                <option value="50">50 bp</option>
+                                <option value="100" disabled>100 bp</option>
+                                <option value="200" disabled>200 bp</option>
+                              </select>
                               <Badge variant="info" className="text-xs whitespace-nowrap">Optimal</Badge>
                             </div>
                           </div>
@@ -412,11 +453,21 @@ export default function Home() {
                             <label className="text-sm font-medium text-gray-700 block">
                               {language === 'ru' ? 'Клеточная линия' : 'Cell Line'}
                             </label>
-                            <Input
+                            <select
                               value={selectedCellLine}
-                              readOnly
-                              className="bg-gray-50"
-                            />
+                              onChange={(e) => setSelectedCellLine(e.target.value)}
+                              className="w-full bg-gradient-to-r from-primary-50 to-accent-50 border-2 border-primary-200 text-primary-800 font-mono text-sm rounded-xl h-10 px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-200 appearance-none cursor-pointer"
+                              style={{
+                                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                                backgroundPosition: 'right 0.5rem center',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: '1.5em 1.5em'
+                              }}
+                            >
+                              <option value="HepG2 (Hepatocellular carcinoma)">HepG2 (Hepatocellular carcinoma)</option>
+                              <option value="WTC11 (Induced pluripotent stem cells)">WTC11 (Induced pluripotent stem cells)</option>
+                              <option value="K562 (Erythroleukemia)">K562 (Erythroleukemia)</option>
+                            </select>
                           </div>
                         </div>
 
@@ -428,7 +479,7 @@ export default function Home() {
                           <div className="relative">
                             <textarea
                               value={demoSequence}
-                              onChange={(e) => setDemoSequence(e.target.value)}
+                              onChange={handleSequenceChange}
                               rows={6}
                               className="w-full p-4 pr-16 border-2 border-gray-200 rounded-xl font-mono text-sm bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-300 resize-none"
                               placeholder={language === 'ru' ? 'Введите ДНК последовательность (A, T, G, C)...' : 'Enter DNA sequence (A, T, G, C)...'}
@@ -440,6 +491,28 @@ export default function Home() {
                             </div>
                           </div>
                           
+                          {/* DNA Sequence Validation Info */}
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                              <span className="text-sm text-blue-700 font-medium">
+                                {language === 'ru' ? 'Длина' : 'Length'}: {demoSequence.replace(/\n/g, '').length} bp
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                              <span className="text-sm text-green-700 font-medium">
+                                {language === 'ru' ? 'Формат' : 'Format'}: {language === 'ru' ? 'Валидная ДНК' : 'Valid DNA'}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-purple-500 rounded-full flex-shrink-0"></div>
+                              <span className="text-sm text-purple-700 font-medium">
+                                {language === 'ru' ? 'Базовые пары' : 'Base pairs'}: A, T, G, C
+                              </span>
+                            </div>
+                          </div>
+
                           {/* Action Buttons */}
                           <div className="flex flex-col sm:flex-row gap-3">
                             <Button 
@@ -460,22 +533,6 @@ export default function Home() {
                               <X className="w-4 h-4 mr-2" />
                               {language === 'ru' ? 'Очистить' : 'Clear'}
                             </Button>
-                          </div>
-
-                          {/* Validation Status */}
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                              <span className="text-sm text-green-700 font-medium">
-                                {language === 'ru' ? 'Длина' : 'Length'}: {demoSequence.replace(/\n/g, '').length} bp
-                              </span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                              <span className="text-sm text-green-700 font-medium">
-                                {language === 'ru' ? 'Формат' : 'Format'}: {language === 'ru' ? 'Валидная ДНК' : 'Valid DNA'}
-                              </span>
-                            </div>
                           </div>
                         </div>
                       </motion.div>
