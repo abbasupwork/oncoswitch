@@ -121,15 +121,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-bg">
       {/* Live Demo Section */}
-      <section id="demo" className="py-20 bg-gradient-to-br from-primary-50 to-secondary-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">      
+      <section id="demo" className="py-10 bg-gradient-to-br from-primary-50 to-secondary-50">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">      
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Card variant="elevated" className="max-w-7xl mx-auto overflow-hidden">
+            <Card variant="elevated" className="mx-auto overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-primary-500/15 via-accent-500/10 to-secondary-500/15 border-b border-gray-200 p-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   <div className="flex-1">
@@ -434,6 +434,7 @@ export default function Home() {
               </CardContent>
             </Card>
           </motion.div>
+
         </div>
       </section>
 
