@@ -5,7 +5,7 @@ import { CheckCircle, Loader2, Info, Activity, Brain, Zap, Target } from 'lucide
 import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
 import { getCurrentLanguage, type Language } from '@/lib/i18n'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 
 interface OncoSwitchActivityPredictorProps {
   status: 'online' | 'offline' | 'analyzing'
@@ -15,7 +15,7 @@ interface OncoSwitchActivityPredictorProps {
   className?: string
 }
 
-export function OncoSwitchActivityPredictor({
+export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredictor({
   status,
   message,
   cellLine,
@@ -35,7 +35,7 @@ export function OncoSwitchActivityPredictor({
           color: 'success',
           icon: CheckCircle,
           dotColor: 'bg-green-500',
-          bgColor: 'bg-green-50',
+          bgColor: 'bg-[#0D1C4A]',
           borderColor: 'border-green-200',
           textColor: 'text-green-700'
         }
@@ -45,7 +45,7 @@ export function OncoSwitchActivityPredictor({
           color: 'error',
           icon: Info,
           dotColor: 'bg-red-500',
-          bgColor: 'bg-red-50',
+          bgColor: 'bg-[#0D1C4A]',
           borderColor: 'border-red-200',
           textColor: 'text-red-700'
         }
@@ -55,7 +55,7 @@ export function OncoSwitchActivityPredictor({
           color: 'info',
           icon: Loader2,
           dotColor: 'bg-blue-500',
-          bgColor: 'bg-blue-50',
+          bgColor: 'bg-[#0D1C4A]',
           borderColor: 'border-blue-200',
           textColor: 'text-blue-700'
         }
@@ -65,8 +65,8 @@ export function OncoSwitchActivityPredictor({
           color: 'default',
           icon: CheckCircle,
           dotColor: 'bg-gray-500',
-          bgColor: 'bg-gray-50',
-          borderColor: 'border-gray-200',
+          bgColor: 'bg-[#0D1C4A]',
+          borderColor: 'border-white',
           textColor: 'text-gray-700'
         }
     }
@@ -79,7 +79,7 @@ export function OncoSwitchActivityPredictor({
       {/* Enhanced Status Header for Investors */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-900">
+          <h3 className="text-xl font-bold text-white">
             {language === 'ru' ? 'AI Система' : 'AI System'}
           </h3>
           <div className="flex items-center space-x-2">
@@ -99,23 +99,23 @@ export function OncoSwitchActivityPredictor({
         
         {/* Investor Metrics */}
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
+          <div className="bg-[#0D1C4A] rounded-lg p-3 border border-[#1C2C5E]">
             <div className="flex items-center space-x-2 mb-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-medium text-green-700">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <span className="text-xs font-medium text-white">
                 {language === 'ru' ? 'Активность' : 'Activity'}
               </span>
             </div>
-            <p className="text-lg font-bold text-green-800">98.5%</p>
+            <p className="text-lg font-bold text-white">98.5%</p>
           </div>
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-3 border border-blue-200">
+          <div className="bg-[#0D1C4A] rounded-lg p-3 border border-[#1C2C5E]">
             <div className="flex items-center space-x-2 mb-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-medium text-blue-700">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <span className="text-xs font-medium text-white">
                 {language === 'ru' ? 'Скорость' : 'Speed'}
               </span>
             </div>
-            <p className="text-lg font-bold text-blue-800">
+            <p className="text-lg font-bold text-white">
               {language === 'ru' ? '< 5 сек' : '< 5 sec'}
             </p>
           </div>
@@ -200,7 +200,7 @@ export function OncoSwitchActivityPredictor({
                 <CheckCircle className="w-6 h-6 text-white" />
               </motion.div>
               <div>
-                <p className="font-bold text-green-800 text-lg">
+                <p className="font-bold text-white text-lg">
                   {language === 'ru' ? 'Система готова' : 'System Ready'}
                 </p>
                 <p className="text-sm text-green-600">
@@ -211,27 +211,27 @@ export function OncoSwitchActivityPredictor({
             
             {/* Enhanced System Info for Investors */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-3 border border-purple-200">
+              <div className="bg-[#1C2C5E] rounded-lg p-3 border border-white">
                 <div className="flex items-center space-x-2 mb-1">
-                  <Brain className="w-4 h-4 text-purple-600" />
-                  <span className="text-xs font-medium text-purple-700">
+                  <Brain className="w-4 h-4 text-white" />
+                  <span className="text-xs font-medium text-white">
                     {language === 'ru' ? 'Модель' : 'Model'}
                   </span>
                 </div>
-                <p className="text-sm font-mono text-purple-800 font-bold">OncoSwitcher_v0</p>
-                <p className="text-xs text-purple-600 mt-1">
+                <p className="text-sm font-mono text-white font-bold">OncoSwitcher_v0</p>
+                <p className="text-xs text-white mt-1">
                   {language === 'ru' ? 'Последняя версия' : 'Latest Version'}
                 </p>
               </div>
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-3 border border-orange-200">
+              <div className="bg-[#1C2C5E] rounded-lg p-3 border border-white">
                 <div className="flex items-center space-x-2 mb-1">
-                  <Target className="w-4 h-4 text-orange-600" />
-                  <span className="text-xs font-medium text-orange-700">
+                  <Target className="w-4 h-4 text-white" />
+                  <span className="text-xs font-medium text-white">
                     {language === 'ru' ? 'Точность' : 'Accuracy'}
                   </span>
                 </div>
-                <p className="text-lg font-bold text-orange-800">98.5%</p>
-                <p className="text-xs text-orange-600 mt-1">
+                <p className="text-lg font-bold text-white">98.5%</p>
+                <p className="text-xs text-white mt-1">
                   {language === 'ru' ? 'Превосходно' : 'Excellent'}
                 </p>
               </div>
@@ -239,27 +239,27 @@ export function OncoSwitchActivityPredictor({
             
             {/* Additional Investor Metrics */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg p-3 border border-cyan-200">
+              <div className="bg-[#1C2C5E] rounded-lg p-3 border border-white">
                 <div className="flex items-center space-x-2 mb-1">
-                  <Activity className="w-4 h-4 text-cyan-600" />
-                  <span className="text-xs font-medium text-cyan-700">
+                  <Activity className="w-4 h-4 text-white" />
+                  <span className="text-xs font-medium text-white">
                     {language === 'ru' ? 'Анализов' : 'Analyses'}
                   </span>
                 </div>
-                <p className="text-lg font-bold text-cyan-800">1,247</p>
-                <p className="text-xs text-cyan-600 mt-1">
+                <p className="text-lg font-bold text-white">1,247</p>
+                <p className="text-xs text-white mt-1">
                   {language === 'ru' ? 'Выполнено' : 'Completed'}
                 </p>
               </div>
-              <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg p-3 border border-pink-200">
+              <div className="bg-[#1C2C5E] rounded-lg p-3 border border-white">
                 <div className="flex items-center space-x-2 mb-1">
-                  <Zap className="w-4 h-4 text-pink-600" />
-                  <span className="text-xs font-medium text-pink-700">
+                  <Zap className="w-4 h-4 text-white" />
+                  <span className="text-xs font-medium text-white">
                     {language === 'ru' ? 'Uptime' : 'Uptime'}
                   </span>
                 </div>
-                <p className="text-lg font-bold text-pink-800">99.9%</p>
-                <p className="text-xs text-pink-600 mt-1">
+                <p className="text-lg font-bold text-white">99.9%</p>
+                <p className="text-xs text-white mt-1">
                   {language === 'ru' ? 'Надежность' : 'Reliability'}
                 </p>
               </div>
@@ -293,6 +293,6 @@ export function OncoSwitchActivityPredictor({
 
     </div>
   )
-}
+})
 
 export default OncoSwitchActivityPredictor

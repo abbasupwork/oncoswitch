@@ -1,21 +1,12 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import { 
   Dna, 
-  MessageSquare, 
-  FlaskConical, 
-  BarChart3,
   Users,
   Target,
   Zap,
-  Sparkles,
-  ArrowRight,
-  Mail,
-  TrendingUp,
-  CheckCircle,
   Loader2,
   Activity,
   Shuffle,
@@ -25,9 +16,6 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { Input } from '@/components/ui/Input'
-import Navigation from '@/components/Navigation'
-import Footer from '@/components/Footer'
 import { OncoSwitchActivityPredictor } from '@/components/OncoSwitchActivityPredictor'
 import { getCurrentLanguage, type Language } from '@/lib/i18n'
 
@@ -64,7 +52,7 @@ export default function Home() {
     setDemoSequence('')
   }, [])
 
-  // Validate DNA sequence input
+  // Validate DNA sequence input - memoized for performance
   const validateDNASequence = useCallback((sequence: string) => {
     // Remove whitespace and convert to uppercase
     const cleanSequence = sequence.replace(/\s/g, '').toUpperCase()
@@ -84,64 +72,31 @@ export default function Home() {
     // If invalid, don't update the state (prevents invalid characters)
   }, [validateDNASequence])
 
-  const features = useMemo(() => [
-    {
-      icon: Dna,
-      title: language === 'ru' ? 'Конструктор последовательностей' : 'Sequence Designer',
-      description: language === 'ru' ? 'Интуитивный drag-and-drop интерфейс для создания ДНК-переключателей с валидацией в реальном времени и AI-подсказками' : 'Intuitive drag-and-drop interface for creating DNA switches with real-time validation and AI-powered suggestions',
-      href: '/designer',
-      color: 'from-primary-500 to-accent-500',
-      features: language === 'ru' ? ['Валидация в реальном времени', 'AI-оптимизация', 'Библиотека компонентов'] : ['Real-time validation', 'AI optimization', 'Component library']
-    },
-    {
-      icon: MessageSquare,
-      title: language === 'ru' ? 'AI Чат-ассистент' : 'AI Chat Assistant',
-      description: language === 'ru' ? 'Умный помощник для контекстных разговоров о дизайне переключателей, анализа результатов и получения экспертных рекомендаций' : 'Smart assistant for context-aware conversations about switch design, result analysis and expert recommendations',
-      href: '/chat',
-      color: 'from-secondary-500 to-accent-500',
-      features: language === 'ru' ? ['Контекстный анализ', 'Экспертные советы', 'Интеграция с платформой'] : ['Contextual analysis', 'Expert advice', 'Platform integration']
-    },
-    {
-      icon: BarChart3,
-      title: language === 'ru' ? 'Аналитика и эксперименты' : 'Analytics & Experiments',
-      description: language === 'ru' ? 'Комплексная панель для отслеживания экспериментов, анализа результатов и визуализации данных с интерактивными графиками' : 'Comprehensive dashboard for experiment tracking, result analysis and data visualization with interactive charts',
-      href: '/analytics',
-      color: 'from-accent-500 to-primary-500',
-      features: language === 'ru' ? ['Трекинг экспериментов', 'Интерактивные графики', 'Отчеты и метрики'] : ['Experiment tracking', 'Interactive charts', 'Reports & metrics']
-    }
-  ], [language])
-
-  const stats = useMemo(() => [
-    { label: language === 'ru' ? 'Последовательности' : 'Sequences', value: '10,000+', icon: Dna },
-    { label: language === 'ru' ? 'Исследователи' : 'Researchers', value: '500+', icon: Users },
-    { label: language === 'ru' ? 'Успешность' : 'Success Rate', value: '98.5%', icon: Target },
-    { label: language === 'ru' ? 'Эксперименты' : 'Experiments', value: '2,500+', icon: FlaskConical }
-  ], [language])
 
   return (
     <div className="min-h-screen bg-gradient-bg">
-      {/* Live Demo Section */}
-      <section id="demo" className="py-10 bg-gradient-to-br from-primary-50 to-secondary-50">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">      
+      {/* Live Demo Section - Optimized for iframe embedding */}
+      <section id="demo" className="bg-blue-dark min-h-screen">
+        <div className="mx-auto">      
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Card variant="elevated" className="mx-auto overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-primary-500/15 via-accent-500/10 to-secondary-500/15 border-b border-gray-200 p-8">
+            <Card variant="blue" className="mx-auto overflow-hidden h-full">
+              <CardHeader className="bg-[#263155] border-b border-gray-200 p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   <div className="flex-1">
                     <CardTitle className="text-3xl font-bold text-gray-900 flex items-center mb-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-accent-500 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                      <div className="w-10 h-10 bg-[#0D1C4A] rounded-xl flex items-center justify-center mr-4 shadow-lg">
                         <Dna className="w-5 h-5 text-white" />
                       </div>
-                      <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                      <span className="text-white">
                         {language === 'ru' ? 'OncoSwitch Activity Predictor' : 'OncoSwitch Activity Predictor'}
                       </span>
                     </CardTitle>
-                    <CardDescription className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+                    <CardDescription className="text-lg text-white leading-relaxed max-w-2xl">
                       {language === 'ru' ? 'AI-система для предсказания активности ДНК-переключателей' : 'AI system for DNA switch activity prediction'}
                     </CardDescription>
                   </div>
@@ -149,10 +104,10 @@ export default function Home() {
               </CardHeader>
               
               <CardContent className="p-0">
-                <div className="grid grid-cols-1 xl:grid-cols-5 gap-0 min-h-[600px]">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 h-full">
                   {/* Left Panel - Configuration (3/5 width) */}
-                  <div className="xl:col-span-3 p-6 xl:p-8 border-r border-gray-100 overflow-hidden">
-                    <div className="space-y-6 xl:space-y-8">
+                  <div className="lg:col-span-3 p-4 lg:p-6 border-r border-gray-100 overflow-hidden">
+                    <div className="space-y-4 lg:space-y-6">
                       {/* Step 1: Operation Mode */}
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -161,8 +116,8 @@ export default function Home() {
                         className="space-y-4"
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</div>
-                          <label className="text-lg font-semibold text-gray-900">
+                          <div className="w-6 h-6 bg-[#8CA4F8] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</div>
+                          <label className="text-lg font-semibold text-white">
                             {language === 'ru' ? 'Режим работы' : 'Operation Mode'}
                           </label>
                         </div>
@@ -200,14 +155,14 @@ export default function Home() {
                         className="space-y-4"
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="w-6 h-6 bg-accent-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
-                          <label className="text-lg font-semibold text-gray-900">
+                          <div className="w-6 h-6 bg-[#8CA4F8] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
+                          <label className="text-lg font-semibold text-white">
                             {language === 'ru' ? 'Конфигурация модели' : 'Model Configuration'}
                           </label>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                           <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-700 block">
+                            <label className="text-sm font-medium text-white block">
                               {language === 'ru' ? 'AI Модель' : 'AI Model'}
                             </label>
                             <div className="relative">
@@ -232,7 +187,7 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-700 block">
+                            <label className="text-sm font-medium text-white block">
                               {language === 'ru' ? 'Контекст анализа' : 'Analysis Context'}
                             </label>
                             <div className="flex flex-col sm:flex-row gap-2">
@@ -266,8 +221,8 @@ export default function Home() {
                         className="space-y-4"
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="w-6 h-6 bg-secondary-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
-                          <label className="text-lg font-semibold text-gray-900">
+                          <div className="w-6 h-6 bg-[#8CA4F8] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
+                          <label className="text-lg font-semibold text-white">
                             {language === 'ru' ? 'Ввод последовательности' : 'Sequence Input'}
                           </label>
                         </div>
@@ -275,7 +230,7 @@ export default function Home() {
                         {/* Sequence Info */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                           <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-700 block">
+                            <label className="text-sm font-medium text-white block">
                               {language === 'ru' ? 'Длина последовательности' : 'Sequence Length'}
                             </label>
                             <div className="flex items-center gap-2">
@@ -298,7 +253,7 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-700 block">
+                            <label className="text-sm font-medium text-white block">
                               {language === 'ru' ? 'Клеточная линия' : 'Cell Line'}
                             </label>
                             <select
@@ -321,7 +276,7 @@ export default function Home() {
 
                         {/* DNA Sequence Input */}
                         <div className="space-y-4">
-                          <label className="text-sm font-medium text-gray-700 block">
+                          <label className="text-sm font-medium text-white block">
                             {language === 'ru' ? 'Биологическая последовательность ДНК' : 'Biological DNA Sequence'}
                           </label>
                           <div className="relative">
@@ -329,7 +284,7 @@ export default function Home() {
                               value={demoSequence}
                               onChange={handleSequenceChange}
                               rows={6}
-                              className="w-full p-4 pr-16 border-2 border-gray-200 rounded-xl font-mono text-sm bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-300 resize-none"
+                              className="w-full p-4 pr-16 border-2 border-[#2F2D59] rounded-xl font-mono text-sm bg-[#1C2C5E] text-white focus:ring-2 focus:ring-primary-200 transition-all duration-300 resize-none"
                               placeholder={language === 'ru' ? 'Введите ДНК последовательность (A, T, G, C)...' : 'Enter DNA sequence (A, T, G, C)...'}
                             />
                             <div className="absolute top-3 right-3">
@@ -423,7 +378,7 @@ export default function Home() {
                   </div>
 
                   {/* Right Panel - Activity Predictor (2/5 width) */}
-                  <div className="xl:col-span-2 p-6 xl:p-8 bg-gradient-to-br from-gray-50 to-white">
+                  <div className="lg:col-span-2 p-4 lg:p-6 bg-[#263154]">
                     <OncoSwitchActivityPredictor
                       status={demoStatus}
                       sequence={demoSequence}
@@ -437,7 +392,6 @@ export default function Home() {
 
         </div>
       </section>
-
     </div>
   )
 }

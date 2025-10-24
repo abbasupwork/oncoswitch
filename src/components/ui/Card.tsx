@@ -4,7 +4,7 @@ import { HTMLAttributes, forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'glassmorphism' | 'elevated' | 'bordered'
+  variant?: 'default' | 'glassmorphism' | 'elevated' | 'bordered' | 'blue'
   hover?: boolean
   padding?: 'sm' | 'md' | 'lg'
 }
@@ -24,7 +24,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       default: 'bg-white border border-gray-200 shadow-sm',
       glassmorphism: 'bg-white/10 backdrop-blur-md border border-white/20 shadow-lg',
       elevated: 'bg-white border border-gray-200 shadow-lg hover:shadow-xl',
-      bordered: 'bg-white border-2 border-purple-200 shadow-sm hover:border-purple-300'
+      bordered: 'bg-white border-2 border-purple-200 shadow-sm hover:border-purple-300',
+      blue: 'bg-[#0D1C4A] border border-[#E5E7EB]'
     }
     
     const paddings = {

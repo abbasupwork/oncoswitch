@@ -89,7 +89,7 @@
   --neutral-900: #171717;
 
   /* Brand Gradients */
-  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%); /* Blue to Teal */
+  --gradient-primary: linear-gradient(135deg, #C880FF 0%, #5752F6 100%); /* Blue to Teal */
   --gradient-secondary: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%); /* Blue to Purple */
   --gradient-accent: linear-gradient(135deg, #14b8a6 0%, #a855f7 100%); /* Teal to Purple */
   --gradient-success: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); /* Green tones */
@@ -243,16 +243,16 @@ body {
 /* Secondary Button */
 .btn-secondary {
   background: transparent;
-  color: var(--primary-600);
-  border: 2px solid var(--primary-600);
+  color: #ffffff;
+  border: 2px solid #ffffff;
   padding: 0.75rem 1.5rem;
 }
 
-.btn-secondary:hover:not(:disabled) {
+/* .btn-secondary:hover:not(:disabled) {
   background: var(--primary-600);
   color: white;
   transform: translateY(-1px);
-}
+} */
 
 /* Ghost Button */
 .btn-ghost {
@@ -439,6 +439,10 @@ body {
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.bg-blue-dark{
+  background-color: #060D23;
 }
 
 /* Responsive Utilities */
