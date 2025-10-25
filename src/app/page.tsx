@@ -400,13 +400,9 @@ export default function Home() {
                           loading={demoStatus === 'analyzing'}
                         >
                           {demoStatus === 'analyzing' ? (
-                            <>
-                              <Loader2 className="w-6 h-6 mr-3 animate-spin" />
-                              {operationMode === 'generation' 
-                                ? (language === 'ru' ? 'Генерирую...' : 'Generating...')
-                                : (language === 'ru' ? 'Анализирую...' : 'Analyzing...')
-                              }
-                            </>
+                            operationMode === 'generation' 
+                              ? (language === 'ru' ? 'Генерирую...' : 'Generating...')
+                              : (language === 'ru' ? 'Анализирую...' : 'Analyzing...')
                           ) : (
                             <>
                               <Play className="w-6 h-6 mr-3" />

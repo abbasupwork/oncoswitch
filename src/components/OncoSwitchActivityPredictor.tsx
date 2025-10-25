@@ -145,13 +145,13 @@ export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredi
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               >
-                <Loader2 className="w-6 h-6 text-blue-600" />
+                <Loader2 className="w-6 h-6 text-white" />
               </motion.div>
               <div>
-                <p className="font-semibold text-blue-800">
+                <p className="font-semibold text-white">
                   {language === 'ru' ? 'Анализ в процессе' : 'Analysis in Progress'}
                 </p>
-                <p className="text-sm text-blue-600">
+                <p className="text-sm text-white">
                   {message || (language === 'ru' 
                     ? `Обрабатываю последовательность для ${cellLine || 'выбранной клеточной линии'}...`
                     : `Processing sequence for ${cellLine || 'selected cell line'}...`
@@ -162,15 +162,15 @@ export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredi
             
             {/* Progress Steps */}
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-sm text-blue-700">
+              <div className="flex items-center space-x-2 text-sm text-white">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <span>{language === 'ru' ? 'Парсинг последовательности' : 'Parsing sequence'}</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-blue-700">
+              <div className="flex items-center space-x-2 text-sm text-white">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <span>{language === 'ru' ? 'AI-анализ активности' : 'AI activity analysis'}</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-blue-700">
+              <div className="flex items-center space-x-2 text-sm text-white">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <span>{language === 'ru' ? 'Генерация результатов' : 'Generating results'}</span>
               </div>
