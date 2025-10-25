@@ -11,7 +11,8 @@ import {
   Activity,
   Shuffle,
   X,
-  Play
+  Play,
+  Info
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -27,10 +28,22 @@ export default function Home() {
   const [operationMode, setOperationMode] = useState<'prediction' | 'generation'>('prediction')
   const [selectedModel, setSelectedModel] = useState('Oncoswitch_demo_X_v0.0')
   const [sequenceLength, setSequenceLength] = useState('50')
+  const [showCellLineInfo, setShowCellLineInfo] = useState(false)
 
   useEffect(() => {
     setLanguage(getCurrentLanguage())
   }, [])
+
+  useEffect(() => {
+    if (showCellLineInfo) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showCellLineInfo])
 
 
   const handleStartAnalysis = useCallback(() => {
@@ -50,6 +63,27 @@ export default function Home() {
 
   const clearSequence = useCallback(() => {
     setDemoSequence('')
+  }, [])
+
+  const getCellLineInfo = useCallback((cellLine: string) => {
+    const info = {
+      'HepG2 (Hepatocellular carcinoma)': {
+        title: 'HepG2 — liver tumor line (HCC)',
+        description: 'A human hepatocellular carcinoma line, the standard for testing liver promoters/enhancers. Has active liver transcription programs (e.g., HNF family), works well in reporter assays and MPRA.',
+        type: 'Tumor'
+      },
+      'WTC11 (Induced pluripotent stem cells)': {
+        title: 'WTC11 — normal isogenic background (iPSC)',
+        description: 'Induced pluripotent human cells from a healthy donor; genetically well characterized and widely used as a "normal" reference line. They can be differentiated into different tissues (cardio/neuro/hepat), which allows testing the tissue specificity of regulatory sequences.',
+        type: 'Normal'
+      },
+      'K562 (Erythroleukemia)': {
+        title: 'K562 — hematological tumor line (erythroleukemia)',
+        description: 'A classic model for hematopoietic regulatory networks; open chromatin and active erythroid factors (e.g., GATA/TAL) make it sensitive to differences in enhancer activity. Often used in ENCODE/MPRA as a benchmark. We use it as a "tumor" model for the hematopoietic context and to test the universality of motifs.',
+        type: 'Tumor'
+      }
+    }
+    return info[cellLine as keyof typeof info] || { title: cellLine, description: '', type: '' }
   }, [])
 
   // Validate DNA sequence input - memoized for performance
@@ -253,9 +287,19 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="space-y-3">
-                            <label className="text-sm font-medium text-white block">
-                              {language === 'ru' ? 'Клеточная линия' : 'Cell Line'}
-                            </label>
+                            <div className="flex items-center gap-2">
+                              <label className="text-sm font-medium text-white block">
+                                {language === 'ru' ? 'Клеточная линия' : 'Cell Line'}
+                              </label>
+                              <button
+                                onClick={() => setShowCellLineInfo(true)}
+                                className="text-blue-300 hover:text-blue-200 transition-colors p-1 rounded-full hover:bg-white/10"
+                                type="button"
+                                title={language === 'ru' ? 'Информация о клеточной линии' : 'Cell line information'}
+                              >
+                                <Info className="w-4 h-4" />
+                              </button>
+                            </div>
                             <select
                               value={selectedCellLine}
                               onChange={(e) => setSelectedCellLine(e.target.value)}
@@ -392,6 +436,63 @@ export default function Home() {
 
         </div>
       </section>
+
+      {/* Cell Line Information Modal */}
+      {showCellLineInfo && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowCellLineInfo(false)
+            }
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+          >
+            <div className="bg-gradient-to-r from-primary-500 to-accent-500 p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">
+                  {language === 'ru' ? 'Информация о клеточных линиях' : 'Cell Line Information'}
+                </h2>
+                <button
+                  onClick={() => setShowCellLineInfo(false)}
+                  className="text-white hover:text-gray-200 transition-colors p-2 rounded-full hover:bg-white/10"
+                  type="button"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
+              <div className="space-y-6">
+                {[
+                  'HepG2 (Hepatocellular carcinoma)',
+                  'WTC11 (Induced pluripotent stem cells)',
+                  'K562 (Erythroleukemia)'
+                ].map((cellLine) => {
+                  const info = getCellLineInfo(cellLine)
+                  return (
+                    <div key={cellLine} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-lg font-bold text-gray-900">{info.title}</h3>
+                        <Badge variant={info.type === 'Tumor' ? 'error' : 'success'}>
+                          {info.type}
+                        </Badge>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">{info.description}</p>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }
