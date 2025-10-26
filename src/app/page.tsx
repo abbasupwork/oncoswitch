@@ -12,7 +12,8 @@ import {
   Shuffle,
   X,
   Play,
-  Info
+  Info,
+  CheckCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -22,9 +23,10 @@ import { getCurrentLanguage, type Language } from '@/lib/i18n'
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>('en')
-  const [demoStatus, setDemoStatus] = useState<'online' | 'analyzing' | 'offline'>('online')
-  const [demoSequence, setDemoSequence] = useState('CACCCTGTCCATCCCCAATTCGGGCCGAATTGCGCCACACGATGTGGGATCGTTC\nGCCCTCATGGTCATGTAAACAAATGCTTGCCACGCTGGCTTGCACAGTCCCATGAAT\nGAGACGCCGAGTTTAATCGAAGTCCATTAACCGGGACGTCGTATATGGACGCTTACC\nTGCAGCGCTGGCCTCCAAATGCAAGGGCGATCG')
+  const [demoStatus, setDemoStatus] = useState<'online' | 'analyzing' | 'offline' | 'completed'>('online')
+  const [demoSequence, setDemoSequence] = useState('CACCCTGTCCATCCCCAATTCGGGCCGAATTGCGCCACACGATGTGGGAT')
   const [selectedCellLine, setSelectedCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
+  const [analysisCellLine, setAnalysisCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
   const [operationMode, setOperationMode] = useState<'prediction' | 'generation'>('prediction')
   const [selectedModel, setSelectedModel] = useState('Oncoswitch_demo_X_v0.0')
   const [sequenceLength, setSequenceLength] = useState('50')
@@ -47,11 +49,16 @@ export default function Home() {
 
 
   const handleStartAnalysis = useCallback(() => {
+    setAnalysisCellLine(selectedCellLine) // Capture the cell line at analysis start
     setDemoStatus('analyzing')
     // Симуляция анализа
     setTimeout(() => {
-      setDemoStatus('online')
+      setDemoStatus('completed')
     }, 3000)
+  }, [selectedCellLine])
+
+  const handleResetAnalysis = useCallback(() => {
+    setDemoStatus('online')
   }, [])
 
   const generateRandomSequence = useCallback(() => {
@@ -95,16 +102,19 @@ export default function Home() {
     return { isValid, cleanSequence }
   }, [])
 
-  // Handle DNA sequence input with validation
+  // Handle DNA sequence input with validation and length limiting
   const handleSequenceChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value
     const { isValid, cleanSequence } = validateDNASequence(inputValue)
+    const maxLength = parseInt(sequenceLength)
     
     if (isValid) {
-      setDemoSequence(cleanSequence)
+      // Limit the sequence to the maximum allowed length
+      const limitedSequence = cleanSequence.slice(0, maxLength)
+      setDemoSequence(limitedSequence)
     }
     // If invalid, don't update the state (prevents invalid characters)
-  }, [validateDNASequence])
+  }, [validateDNASequence, sequenceLength])
 
 
   return (
@@ -328,6 +338,7 @@ export default function Home() {
                               value={demoSequence}
                               onChange={handleSequenceChange}
                               rows={6}
+                              maxLength={parseInt(sequenceLength)}
                               className="w-full p-4 pr-16 border-2 border-[#2F2D59] rounded-xl font-mono text-sm bg-[#1C2C5E] text-white focus:ring-2 focus:ring-primary-200 transition-all duration-300 resize-none"
                               placeholder={language === 'ru' ? 'Введите ДНК последовательность (A, T, G, C)...' : 'Enter DNA sequence (A, T, G, C)...'}
                             />
@@ -343,7 +354,7 @@ export default function Home() {
                             <div className="flex items-center space-x-2">
                               <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
                               <span className="text-sm text-blue-700 font-medium">
-                                {language === 'ru' ? 'Длина' : 'Length'}: {demoSequence.replace(/\n/g, '').length} bp
+                                {language === 'ru' ? 'Длина' : 'Length'}: {demoSequence.replace(/\n/g, '').length}/{sequenceLength} bp
                               </span>
                             </div>
                             <div className="flex items-center space-x-2">
@@ -395,7 +406,7 @@ export default function Home() {
                           variant="gradient"
                           size="lg"
                           className="w-full h-14 text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary-500 via-accent-500 to-secondary-500 hover:from-primary-600 hover:via-accent-600 hover:to-secondary-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                          onClick={handleStartAnalysis}
+                          onClick={demoStatus === 'completed' ? handleResetAnalysis : handleStartAnalysis}
                           disabled={demoStatus === 'analyzing' || !demoSequence.trim()}
                           loading={demoStatus === 'analyzing'}
                         >
@@ -403,6 +414,11 @@ export default function Home() {
                             operationMode === 'generation' 
                               ? (language === 'ru' ? 'Генерирую...' : 'Generating...')
                               : (language === 'ru' ? 'Анализирую...' : 'Analyzing...')
+                          ) : demoStatus === 'completed' ? (
+                            <>
+                              <Play className="w-6 h-6 mr-3" />
+                              {language === 'ru' ? 'Запустить снова' : 'Run Again'}
+                            </>
                           ) : (
                             <>
                               <Play className="w-6 h-6 mr-3" />
@@ -422,7 +438,7 @@ export default function Home() {
                     <OncoSwitchActivityPredictor
                       status={demoStatus}
                       sequence={demoSequence}
-                      cellLine={selectedCellLine}
+                      cellLine={analysisCellLine}
                     />
                   </div>
                 </div>

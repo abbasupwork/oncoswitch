@@ -8,7 +8,7 @@ import { getCurrentLanguage, type Language } from '@/lib/i18n'
 import { useState, useEffect, memo } from 'react'
 
 interface OncoSwitchActivityPredictorProps {
-  status: 'online' | 'offline' | 'analyzing'
+  status: 'online' | 'offline' | 'analyzing' | 'completed'
   message?: string
   cellLine?: string
   sequence?: string
@@ -59,6 +59,16 @@ export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredi
           borderColor: 'border-blue-200',
           textColor: 'text-blue-700'
         }
+      case 'completed':
+        return {
+          text: language === 'ru' ? 'Завершено' : 'Completed',
+          color: 'success',
+          icon: CheckCircle,
+          dotColor: 'bg-green-500',
+          bgColor: 'bg-[#0D1C4A]',
+          borderColor: 'border-green-200',
+          textColor: 'text-green-700'
+        }
       default:
         return {
           text: language === 'ru' ? 'Неизвестно' : 'Unknown',
@@ -89,7 +99,7 @@ export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredi
               transition={{ duration: 2, repeat: Infinity }}
             />
             <Badge 
-              variant={status === 'online' ? 'success' : status === 'analyzing' ? 'info' : 'error'}
+              variant={status === 'online' || status === 'completed' ? 'success' : status === 'analyzing' ? 'info' : 'error'}
               className="text-xs font-medium"
             >
               {statusConfig.text}
@@ -285,6 +295,65 @@ export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredi
                 <p className="text-sm text-red-600">
                   {language === 'ru' ? 'Попробуйте позже или обратитесь в поддержку' : 'Try again later or contact support'}
                 </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+        
+        {status === 'completed' && (
+          <motion.div
+            className="space-y-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex items-center space-x-3">
+              <motion.div 
+                className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg"
+                animate={{ 
+                  boxShadow: [
+                    "0 0 0 0 rgba(34, 197, 94, 0.4)",
+                    "0 0 0 10px rgba(34, 197, 94, 0)",
+                    "0 0 0 0 rgba(34, 197, 94, 0)"
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <CheckCircle className="w-6 h-6 text-white" />
+              </motion.div>
+              <div>
+                <p className="font-bold text-white text-lg">
+                  {language === 'ru' ? 'Анализ завершен' : 'Analysis Complete'}
+                </p>
+                <p className="text-sm text-green-600">
+                  {language === 'ru' ? 'Результаты готовы' : 'Results ready'}
+                </p>
+              </div>
+            </div>
+            
+            {/* Analysis Results */}
+            <div className="bg-[#1C2C5E] rounded-lg p-4 border border-green-200">
+              <div className="flex items-center space-x-2 mb-3">
+                <Activity className="w-5 h-5 text-green-400" />
+                <span className="text-sm font-medium text-white">
+                  {language === 'ru' ? 'Результаты анализа' : 'Analysis Results'}
+                </span>
+              </div>
+              <div className="space-y-3">
+                <p className="text-sm text-white leading-relaxed">
+                  {language === 'ru' 
+                    ? `Конечно! Предполагаемая активность данной последовательности в ${cellLine || 'выбранной клеточной линии'} составляет [${(Math.random() * 20 - 10).toFixed(2)}].`
+                    : `Sure! The estimated activity of the given sequence in ${cellLine || 'selected cell line'} is ${(Math.random() * 20 - 10).toFixed(2)}.`
+                  }
+                </p>
+                <div className="flex items-center justify-between pt-2 border-t border-gray-600">
+                  <span className="text-xs text-gray-400">
+                    {language === 'ru' ? 'Диапазон: [-10.00, 10.00]' : 'Range: [-10.00, 10.00]'}
+                  </span>
+                  <Badge variant="success" className="text-xs">
+                    {language === 'ru' ? 'Успешно' : 'Success'}
+                  </Badge>
+                </div>
               </div>
             </div>
           </motion.div>
