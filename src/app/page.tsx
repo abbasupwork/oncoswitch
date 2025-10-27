@@ -30,6 +30,7 @@ export default function Home() {
   const [analysisCellLine, setAnalysisCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
   const [operationMode, setOperationMode] = useState<'prediction' | 'generation'>('prediction')
   const [showCheck, setShowCheck] = useState(false)
+  const [showCellLineCheck, setShowCellLineCheck] = useState(false)
   const [selectedModel, setSelectedModel] = useState('Oncoswitch_demo_X_v0.0')
   const [sequenceLength, setSequenceLength] = useState('50')
   const [showCellLineInfo, setShowCellLineInfo] = useState(false)
@@ -183,9 +184,9 @@ export default function Home() {
                           >
                             <Target className="w-4 h-4 mr-2" />
                             {language === 'ru' ? 'Предсказание активности' : 'Activity Prediction'}
-                            {(operationMode === 'prediction' || showCheck) && (
+                            {showCheck && (
                               <motion.div
-                                key={showCheck ? 'clicked' : 'active'}
+                                key="activity-check"
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0, opacity: 0 }}
@@ -256,10 +257,23 @@ export default function Home() {
                               <Button 
                                 variant="primary" 
                                 size="sm" 
-                                className="flex-1 h-10 font-medium shadow-md hover:shadow-lg transition-all duration-300 bg-primary-600 hover:bg-primary-700"
+                                onClick={() => setShowCellLineCheck(true)}
+                                className="flex-1 h-10 font-medium shadow-md hover:shadow-lg transition-all duration-300 bg-primary-600 hover:bg-primary-700 relative"
                               >
                                 <Users className="w-4 h-4 mr-2" />
                                 {language === 'ru' ? 'Клеточная линия' : 'Cell Line'}
+                                {showCellLineCheck && (
+                                  <motion.div
+                                    key="cellline-check"
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    exit={{ scale: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                                  >
+                                    <CheckCircle className="w-4 h-4 text-white" />
+                                  </motion.div>
+                                )}
                               </Button>
                               <Button 
                                 variant="outline" 
