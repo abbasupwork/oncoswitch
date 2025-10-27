@@ -343,13 +343,11 @@ export const OncoSwitchActivityPredictor = memo(function OncoSwitchActivityPredi
                 <p className="text-sm text-white leading-relaxed">
                   {language === 'ru' 
                     ? `Конечно! Предполагаемая активность данной последовательности в ${cellLine || 'выбранной клеточной линии'} составляет [${(Math.random() * 20 - 10).toFixed(2)}].`
-                    : `Sure! The estimated activity of the given sequence in ${cellLine || 'selected cell line'} is ${(Math.random() * 20 - 10).toFixed(2)}.`
+                    : `The estimated activity of the given sequence in ${cellLine || 'selected cell line'} is ${(Math.random() * 20 - 10).toFixed(2)}.`
                   }
                 </p>
                 <div className="flex items-center justify-between pt-2 border-t border-gray-600">
-                  <span className="text-xs text-gray-400">
-                    {language === 'ru' ? 'Диапазон: [-10.00, 10.00]' : 'Range: [-10.00, 10.00]'}
-                  </span>
+                  
                   <Badge variant="success" className="text-xs">
                     {language === 'ru' ? 'Успешно' : 'Success'}
                   </Badge>

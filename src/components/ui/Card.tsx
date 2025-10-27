@@ -14,7 +14,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     className, 
     variant = 'default', 
     hover = false,
-    padding = 'md',
+    padding = 'sm',
     children, 
     ...props 
   }, ref) => {

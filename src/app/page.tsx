@@ -13,7 +13,8 @@ import {
   X,
   Play,
   Info,
-  CheckCircle
+  CheckCircle,
+  Lock
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -28,6 +29,7 @@ export default function Home() {
   const [selectedCellLine, setSelectedCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
   const [analysisCellLine, setAnalysisCellLine] = useState('HepG2 (Hepatocellular carcinoma)')
   const [operationMode, setOperationMode] = useState<'prediction' | 'generation'>('prediction')
+  const [showCheck, setShowCheck] = useState(false)
   const [selectedModel, setSelectedModel] = useState('Oncoswitch_demo_X_v0.0')
   const [sequenceLength, setSequenceLength] = useState('50')
   const [showCellLineInfo, setShowCellLineInfo] = useState(false)
@@ -169,8 +171,11 @@ export default function Home() {
                           <Button 
                             variant={operationMode === 'prediction' ? 'gradient' : 'outline'}
                             size="sm" 
-                            onClick={() => setOperationMode('prediction')}
-                            className={`flex-1 h-10 text-sm font-medium transition-all duration-300 ${
+                            onClick={() => {
+                              setOperationMode('prediction')
+                              setShowCheck(true)
+                            }}
+                            className={`flex-1 h-10 text-sm font-medium transition-all duration-300 relative ${
                               operationMode === 'prediction' 
                                 ? 'shadow-md hover:shadow-lg bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600' 
                                 : 'border-2 border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50'
@@ -178,6 +183,18 @@ export default function Home() {
                           >
                             <Target className="w-4 h-4 mr-2" />
                             {language === 'ru' ? 'Предсказание активности' : 'Activity Prediction'}
+                            {(operationMode === 'prediction' || showCheck) && (
+                              <motion.div
+                                key={showCheck ? 'clicked' : 'active'}
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                              >
+                                <CheckCircle className="w-4 h-4 text-white" />
+                              </motion.div>
+                            )}
                           </Button>
                           <Button 
                             variant="outline"
@@ -185,8 +202,9 @@ export default function Home() {
                             disabled
                             className={`flex-1 h-10 text-sm font-medium transition-all duration-300 border-2 border-gray-300 text-gray-400 bg-gray-50 opacity-60 cursor-not-allowed`}
                           >
-                            <Zap className="w-4 h-4 mr-2" />
+                            <Activity className="w-4 h-4 mr-2" />
                             {language === 'ru' ? 'Генерация последовательности (заблокировано)' : 'Sequence Generation'}
+                            <Lock className="w-4 h-4 ml-2" />
                           </Button>
                         </div>
                       </motion.div>
@@ -222,8 +240,8 @@ export default function Home() {
                                 }}
                               >
                                 <option value="Oncoswitch_demo_X_v0.0">Oncoswitch_demo_X_v0.0</option>
-                                <option value="Oncoswitch_demo_X_v1.0.0" disabled>Oncoswitch_demo_X_v1.0.0</option>
-                                <option value="Oncoswitch_demo_X_ v1.0.1" disabled>Oncoswitch_demo_X_ v1.0.1</option>
+                                <option value="Oncoswitch_demo_X_v1.0.0" disabled>🔒 Oncoswitch_demo_X_v1.0.0</option>
+                                <option value="Oncoswitch_demo_X_ v1.0.1" disabled>🔒 Oncoswitch_demo_X_ v1.0.1</option>
                               </select>
                               <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                                 <Badge variant="success" className="text-xs">Latest</Badge>
@@ -249,8 +267,9 @@ export default function Home() {
                                 disabled
                                 className="flex-1 h-10 font-medium border-2 border-gray-300 text-gray-400 bg-gray-50 opacity-60 cursor-not-allowed transition-all duration-300"
                               >
-                                <Activity className="w-4 h-4 mr-2" />
+                                <Users className="w-4 h-4 mr-2" />
                                 {language === 'ru' ? 'Ткань (заблокировано)' : 'Tissue'}
+                                <Lock className="w-4 h-4 ml-2" />
                               </Button>
                             </div>
                           </div>
@@ -290,8 +309,8 @@ export default function Home() {
                                 }}
                               >
                                 <option value="50">50 bp</option>
-                                <option value="100" disabled>100 bp</option>
-                                <option value="200" disabled>200 bp</option>
+                                <option value="100" disabled>🔒 100 bp</option>
+                                <option value="200" disabled>🔒 200 bp</option>
                               </select>
                               <Badge variant="info" className="text-xs whitespace-nowrap">Optimal</Badge>
                             </div>
